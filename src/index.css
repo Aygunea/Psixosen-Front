@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+body {
+  font-family: "Roboto", sans-serif;
+  box-sizing: border-box;
+}
+
+input,
+button {
+  font-family: inherit;
+}
+/* *{
+  @apply transition-colors duration-75;
+} */
+/* input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+} */
+
+/* input[type="date"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: 
+} */
+/* input[type="date"]:hover,
+input[type="date"]:focus {
+  background-color: transparent;
+}  */
+/* Varsayılan artı ve eksi ikonlarını gizlemek için */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+::selection {
+  background-color: #EBEBEB;
+  color: #222; 
+}
+input::selection{
+  background-color: #EBEBEB;
+  color: #222; 
+}
+.input-placeholder::placeholder {
+  color: #AFAFAF; 
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
