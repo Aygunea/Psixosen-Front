@@ -29,10 +29,18 @@ const AddMusic = () => {
 
             const result = await response.json();
             if (response.ok) {
+                titleRef.current.value = ''
+                artistRef.current.value = ''
+                durationRef.current.value = ''
+                coverImageRef.current.value = null
+                audioRef.current.value = null
+                setCoverImageName('');
+                setAudioFileName(''); 
                 console.log('Music added successfully:', result);
             } else {
                 console.error('Error adding music:', result);
             }
+
         } catch (error) {
             console.error('Error:', error);
         }

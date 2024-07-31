@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import QuizQuestion from './QuizQuestion';
 import Notice from './Notice';
 
-const Quiz = ({ quizData, formData }) => {
+const Quiz = ({ quizData }) => {
     const [score, setScore] = useState(0);
+    let scoreValue;
     const [showScore, setShowScore] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState(
         Array(quizData.length).fill(null)
@@ -29,34 +30,13 @@ const Quiz = ({ quizData, formData }) => {
         setScore(newScore);
         setShowScore(true);
 
-        let scoreValue = (newScore / quizData.length) * 100;
-        const finalFormData = { ...formData };
-        console.log(finalFormData);
-        try {
-            const response = await fetch('http://localhost:3000/api/auth/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(finalFormData),
-            });
-            const result = await response.json();
-            console.log(result+" results");
-            if (response.ok) {
-                alert('Signup successful');
-            } else {
-                alert(`Signup failed: ${result.error}`);
-            }
-        } catch (error) {
-            console.error('Error during signup:', error);
-            alert('An error occurred. Please try again.');
-        }
+         scoreValue = (newScore / quizData.length) * 100;
     };
 
     return (
         <div className="quiz-app">
             {showScore ? (
-                <Notice score={score} />
+                <Notice score={scoreValue} />
             ) : (
                 <div className="py-[50px] h-screen flex flex-col bg-dark">
                     <div className="container mx-auto flex flex-col justify-center h-full">

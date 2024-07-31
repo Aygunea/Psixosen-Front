@@ -5,11 +5,12 @@ import { WiTime2 } from "react-icons/wi";
 import { RiVoiceprintLine } from "react-icons/ri";
 import { GoHeart } from 'react-icons/go';
 
-const PopularItem = ({ title, number, duration, artist, watchCount, coverImage, onClick }) => {
+const PopularItem = ({ title, number, duration, artist, coverImage, onClick }) => {
     const coverImageUrl = `http://localhost:3000/${coverImage}`
 
     return (
-        <div className='py-6 xs:py-3 flex justify-between border-b dark:border-dark20' onClick={onClick}>
+        <div className='py-6 xs:py-3 flex justify-between border-b dark:border-dark20'
+         onClick={onClick}>
             <div className="flex items-center w-full">
                 <div className='dark:text-dark70 text-light70 mr-[17.5px] xs:mr-2 text-sm xs:text-xs'>
                     #{number}
@@ -26,26 +27,20 @@ const PopularItem = ({ title, number, duration, artist, watchCount, coverImage, 
                     </p>
                 </div>
             </div>
-            <div className='flex items-center justify-between xs:justify-end w-full'>
+            <div className='flex items-center justify-between sm:gap-10 xs:justify-end w-full'>
                 <div className='xs:hidden block dark:text-dark100 text-gray10 text-sm'>
                     {title}
                 </div>
                 <div className="flex items-center gap-[79px]">
-                    <div className='xs:hidden block'>
-                        <div className='dark:text-dark50 text-light50 flex items-center gap-3 text-sm'>
-                            <VscMusic className="xs:text-xs text-base" />
-                            <p>{watchCount}</p>
-                        </div>
-                    </div>
-                    <div className='xs:hidden block'>
+                    <div className='hidden sm:block'>
                     <div className='dark:text-dark50 text-light50 flex items-center gap-3 text-sm'>
                         <WiTime2 className="xs:text-xs text-base" />
                         <p>{duration}</p>
                     </div>
                     </div>
-                    <div className='dark:text-dark50 text-light50 text-sm'>
+                    {/* <div className='dark:text-dark50 text-light50 text-sm'>
                         <GoHeart className="xs:text-xs text-base xs:w-3 xs:h-3" />
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

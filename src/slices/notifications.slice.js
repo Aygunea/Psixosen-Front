@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 // Helper function to load notifications from local storage
 const loadFromLocalStorage = () => {
   try {
-    const serializedState = localStorage.getItem("notifications");
+    const serializedState = sessionStorage.getItem("notifications");
     if (serializedState === null) {
       return [];
     }
@@ -18,7 +18,7 @@ const loadFromLocalStorage = () => {
 const saveToLocalStorage = (notifications) => {
   try {
     const serializedState = JSON.stringify(notifications);
-    localStorage.setItem("notifications", serializedState);
+    sessionStorage.setItem("notifications", serializedState);
   } catch (e) {
     console.warn("Could not save notifications to local storage", e);
   }

@@ -12,7 +12,7 @@ const Head = ({ children }) => {
         navigate('/home/settings/notifications');
     };
     return (
-        <div className="hidden sm:block">
+        <div className="hidden lg:block">
             <div className='py-8 flex gap-8 justify-end pr-6'>
                 <button
                     onClick={handleNotificationClick}
@@ -23,14 +23,14 @@ const Head = ({ children }) => {
                 </button>
                 <ToggleButton />
                 {children}
-                <div className='flex items-center gap-4 text-sm'>
-                    <p className='text-darkblack dark:text-dark100 hidden sm:block'>Balans:</p>
+                {/* <div className='flex items-center gap-4 text-sm'>
+                    <p className='text-darkblack dark:text-dark100 hidden lg:block'>Balans:</p>
                     <button
                         onClick={handleFinanceClick}
                         className='w-[87px] bg-lightblue dark:bg-blue100 text-dark100 rounded-[5px] p-[10px] gap-[10px] flex items-center justify-center'>
                         <span>149 AZN</span>
                     </button>
-                </div>
+                </div> */}
             </div>
         </div>
     )

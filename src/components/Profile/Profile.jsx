@@ -9,8 +9,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setListener } from '../../slices/listener.slice';
 import { setUser } from '../../slices/userSlice';
 import { FiLogOut } from "react-icons/fi";
-import axios from 'axios';
 import Rating from './Rating';
+import { clearRole } from '../../slices/role.slice';
+import Popup from '../Popup/Popup';
 
 
 const Profile = () => {
@@ -48,26 +49,49 @@ const Profile = () => {
   const userNicknameRef = useRef()
   const userEmailRef = useRef()
 
-  const name = listener?.username.split(" ")[0];
-  const surname = listener?.username.split(" ")[1];
+  const name = listener?.username?.split(" ")[0];
+  const surname = listener?.username?.split(" ")[1];
+
+  //popup
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [popupType, setPopupType] = useState('');
+  const [popupMessage, setPopupMessage] = useState('');
+  const closePopup = () => {
+    setPopupVisible(false);
+  };
 
   const logout = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      await axios.post("http://localhost:3000/api/auth/logout")
-      if (role === "user") {
-        dispatch(setUser(''))
-        sessionStorage.removeItem("user");
+      const response = await fetch('http://localhost:3000/api/auth/logout', {
+        method: "POST"
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        setPopupType('failed');
+        setPopupMessage(data.message);
+        setPopupVisible(true);
+        return;
       }
-      if (role === "listener") {
-        dispatch(setListener(''))
-        sessionStorage.removeItem("listener");
+      if (response.ok) {
+        if (role === "user") {
+          dispatch(setUser(''));
+          sessionStorage.removeItem("user");
+        }
+        if (role === "listener") {
+          dispatch(setListener(''));
+          sessionStorage.removeItem("listener");
+        }
+        dispatch(clearRole());
+        navigate("/");
       }
-      navigate("/")
     } catch (error) {
-      console.log("Fetch error " + error);
+      setPopupType('failed');
+      setPopupVisible(true);
+      setPopupMessage('Server xətası. Zəhmət olmasa yenidən cəhd edin.');
     }
-  }
+  };
 
   const handleEdit = () => {
     setIsEditing(!isEditing);
@@ -181,7 +205,7 @@ const Profile = () => {
                     onClick={() => handleSelect(category)}
                     className={`flex items-center gap-2 px-6 xs:px-3 py-3 cursor-pointer border-light20 dark:border-dark20 ${index !== themes.length - 1 ? 'border-b' : ''}`}>
                     <div>
-                    {category.icon}
+                      {category.icon}
                     </div>
                     {category.name}
                   </li>
@@ -192,7 +216,7 @@ const Profile = () => {
 
           <button
             onClick={logout}
-            className='flex items-center justify-center gap-[10px] p-[10px] rounded-[5px] bg-redlight300 dark:bg-reddark300 text-dark100 w-[215px] xs:w-full xs:text-xs'>
+            className='flex items-center justify-center gap-[10px] p-[10px] rounded-[5px] bg-redlight300 dark:bg-reddark300 text-dark100 lg:w-[215px] w-full xs:text-xs'>
             Hesabdan Çıx
             <FiLogOut />
           </button>
@@ -201,30 +225,32 @@ const Profile = () => {
       {listener && (
         <div className='flex flex-col gap-8'>
           {/* step 1 */}
-          <div className='flex justify-between items-center'>
+          <div className='flex w-full items-center justify-between'>
             <div className='flex flex-col gap-4'>
               <p className='dark:text-dark100 text-gray10 text-base font-medium'>İstifadəçi</p>
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-x-4">
+                <div className='lg:w-14 lg:h-14 w-12 h-12 rounded-full overflow-hidden dark:opacity-60 opacity-80'>
                 <img
                   src={require('../../images/profilePic.jpeg')} alt="Icon"
-                  className="w-14 h-14 rounded-full dark:opacity-60 opacity-80"
+                  className=" object-cover"
                 />
+                </div>
                 <div className='flex flex-col gap-1'>
                   <input
                     ref={nicknameRef}
-                    className={`dark:text-dark100 text-gray10 text-base text-medium bg-transparent border-none outline-none ${isEditing && 'outline-auto'}`}
+                    className={`dark:text-dark100 text-gray10 text-sm lg:text-base text-medium bg-transparent border-none outline-none ${isEditing && 'outline-auto'}`}
                     type="text"
                     readOnly={!isEditing}
                     defaultValue={listener.nickname}
                   />
-                  <p className='dark:text-dark50 text-light50 text-sm'>{listener.fieldOfActivity}</p>
+                  <p className='dark:text-dark50 text-light50 text-xs lg:text-sm'>{listener.fieldOfActivity}</p>
                 </div>
               </div>
             </div>
 
             <button
               onClick={isEditing ? handleSave : handleEdit}
-              className='w-max h-max text-sm dark:border-dark50 border-light50 dark:text-dark100 text-gray10 border-[1.5px] flex items-center justify-center gap-2 py-[9.5px] px-3 rounded-[31px]'>
+              className='w-max h-max lg:text-sm text-[10px] dark:border-dark50 border-light50 dark:text-dark100 text-gray10 border-[1.5px] flex items-center justify-center gap-2 py-[9.5px] lg:px-3 px-2 rounded-[31px]'>
               {isEditing ? 'Yadda saxla' : 'Redaktə et'}
               <RiEdit2Line />
             </button>
@@ -233,9 +259,9 @@ const Profile = () => {
           <div className='flex justify-between'>
             <div className="flex flex-col gap-6 w-full">
               <p className='dark:text-dark100 text-gray10 text-base font-medium'>Şəxsi Məlumat</p>
-              <div className='flex justify-between w-full'>
+              <div className='flex justify-between w-full gap-6'>
                 {/* left */}
-                <div className="flex flex-col gap-6  xs:w-full w-[428px]">
+                <div className="flex flex-col gap-6 w-full lg:w-[428px]">
                   <div className='flex flex-col gap-3'>
                     <label className='dark:text-dark50 text-light50 text-sm'>Ad:</label>
                     <input
@@ -252,7 +278,7 @@ const Profile = () => {
                   </div>
                 </div>
                 {/* right */}
-                <div className="flex flex-col gap-6 xs:w-full w-[428px]">
+                <div className="flex flex-col gap-6 w-full lg:w-[428px]">
                   <div className='flex flex-col gap-3'>
                     <label className='dark:text-dark50 text-light50 text-sm'>Soyad:</label>
                     <input
@@ -271,20 +297,26 @@ const Profile = () => {
               </div>
               <button
                 onClick={logout}
-                className='flex items-center justify-center gap-[10px] p-[10px] rounded-[5px] bg-redlight300 dark:bg-reddark300 text-dark100 w-[215px]'>
+                className='mt-6 flex items-center justify-center gap-[10px] p-[10px] rounded-[5px] bg-redlight300 dark:bg-reddark300 text-dark100 w-[215px]'>
                 Hesabdan Çıx
                 <FiLogOut />
               </button>
             </div>
           </div>
           {/* step 3 */}
-          <div className="flex flex-col gap-6 xs:gap-4">
+          {/* <div className="flex flex-col gap-6 xs:gap-4">
             <p className='dark:text-dark100 text-gray10 text-base xs:text-sm font-medium'>Dəyərləndirmə</p>
             <Rating />
             <Rating />
-          </div>
+          </div> */}
         </div>
       )}
+      {
+        popupVisible && <Popup
+          message={popupMessage}
+          type={popupType}
+          onClose={closePopup} />
+      }
     </div>
   )
 }

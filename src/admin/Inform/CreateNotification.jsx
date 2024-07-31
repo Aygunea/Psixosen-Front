@@ -17,16 +17,15 @@ const CreateNotification = () => {
 
     let recipient = {};
     if (activeButton === 'Bütün istifadəçilər') {
-      recipient = { sendToAll: true };
-    } else if (activeButton === 'Bütün Danışanlar') {
-      recipient = { sendToAllUsers: true };
-
+      recipient = { sendToAllUsers: false, sendToAllListeners: false, sendToAll: true };
     } else if (activeButton === 'Bütün Dinləyicilər') {
-      recipient = { sendToAllListeners: true };
+      recipient = { sendToAllUsers: false, sendToAllListeners: true, sendToAll: false };
+    } else if (activeButton === 'Bütün Danışanlar') {
+      recipient = { sendToAllUsers: true, sendToAllListeners: false, sendToAll: false };
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/notifications', {
+      const response = await fetch('http://localhost:3000/api/notifications/adminnotification', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +73,7 @@ const CreateNotification = () => {
         {/* Bildiriş mətni */}
         <div className='flex flex-col gap-4 mb-20'>
           <label htmlFor="text" className='text-gray10 text-base xs:tex-sm'>
-            Şikayətinizi daha ətraflı qeyd edin
+          Bildiriş mətni:
           </label>
           <textarea id="text" type="text" placeholder='Bildiriş mətnini daxil edin...'
             ref={descriptionRef}

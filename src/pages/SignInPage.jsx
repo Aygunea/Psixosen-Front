@@ -1,13 +1,8 @@
-import { useSelector } from "react-redux";
-import SignInUser from "../components/Register/SignInUser";
-import SignInListener from "../components/Register/SignInListener";
+import SignIn from "../components/Register/SignIn";
 
 const SignInPage = () => {
-  const role = useSelector((state) => state.role.role);
   return (
-    <>
-      {role === "user" ? <SignInUser /> : role === "listener" ? <SignInListener /> : null}
-    </>
+    <SignIn />
   );
 };
 

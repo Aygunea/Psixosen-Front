@@ -37,16 +37,17 @@
 import React from 'react';
 import { IoMdClose } from "react-icons/io";
 import { RiCloseLargeLine } from "react-icons/ri";
+import { FaCheck } from "react-icons/fa6";
 
 const Popup = ({ message, onClose, type }) => {
     const isSuccess = type === 'success';
 
     return (
-        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50' onClick={onClose}>
+        <div className='fixed inset-0 z-[1000] flex items-center justify-center bg-black bg-opacity-50' onClick={onClose}>
             <div className='relative w-[600px] py-8 flex flex-col dark:bg-popupdark bg-popuplight rounded-lg items-center shadow-custom'
                 onClick={(e) => e.stopPropagation()}>
                 <div className={`w-[72px] h-[72px] text-2xl rounded-full mb-[66px] ${isSuccess ? 'dark:bg-green bg-lightgreen' : 'dark:bg-reddark300 bg-redlight300'} text-dark100 flex items-center justify-center`}>
-                    {isSuccess ? <RiCloseLargeLine /> : <RiCloseLargeLine />}
+                    {isSuccess ? <FaCheck /> : <RiCloseLargeLine />}
                 </div>
                 <div className='w-[375px] dark:text-dark70 text-light70 text-lg mb-[97px] flex flex-col text-center items-center gap-3'>
                     <p className='dark:text-dark100 text-gray10 text-2xl'>{isSuccess ? 'Uğurlu' : 'Uğursuz'}</p>

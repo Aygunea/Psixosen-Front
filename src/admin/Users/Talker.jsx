@@ -21,10 +21,17 @@ const Talker = () => {
     const headers = [
         'Danışan',
         'Qeydiyyat Tarixi',
-        'Balans',
         'Əməliyyat'
     ];
-
+    const formatDate = (date) => {
+        if (!date) return { dateString: '' };
+        const formattedTime = new Date(date);
+        const day = formattedTime.getDate().toString().padStart(2, '0');
+        const month = (formattedTime.getMonth() + 1).toString().padStart(2, '0');
+        const year = formattedTime.getFullYear().toString().slice(-4);
+        const dateString = `${day}.${month}.${year}`;
+        return { dateString };
+    };
     return (
         <div>
             {talkers.length > 0 ? (
@@ -41,9 +48,7 @@ const Talker = () => {
                     </thead>
                     <tbody className='w-full'>
                         {talkers.map((talker, rowIndex) => {
-                            const createdAt = new Date(talker.createdAt);
-                            const dateString = createdAt.toLocaleDateString('az-AZ', { day: '2-digit', month: '2-digit', year: '2-digit' });
-
+                             const { dateString } = formatDate(talker.createdAt);
                             return (
                                 <tr key={rowIndex} className='w-full'>
                                     <td className='text-gray10 text-base py-[11.5px] border-b border-darkgray border-r'>
@@ -51,9 +56,6 @@ const Talker = () => {
                                     </td>
                                     <td className='text-gray10 text-base py-[11.5px] border-b border-darkgray border-r'>
                                         {dateString}
-                                    </td>
-                                    <td className='text-gray10 text-base py-[11.5px] border-b border-darkgray border-r'>
-                                        {talker.balance} Azn
                                     </td>
                                     <td className='text-gray10 text-base py-[11.5px] border-b border-darkgray'>
                                         <div className='flex justify-center items-center gap-3'>

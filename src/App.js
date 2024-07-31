@@ -1,14 +1,12 @@
 //React
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 // Router
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 //Redux
-import { useDispatch } from "react-redux";
-import { setUser } from "./slices/userSlice";
-import { setListener } from "./slices/listener.slice";
+import {useSelector } from "react-redux";
 
 // Pages
 import SignUpPage from "./pages/SignUpPage";
@@ -16,8 +14,6 @@ import LoginScreen from "./pages/LoginScreen";
 import SignInPage from "./pages/SignInPage";
 import Education from "./components/Register/Education";
 import GeneralInfo from "./components/Register/GeneralInfo";
-import Exam from "./components/Register/Exam";
-import Quiz from "./components/Register/Quiz";
 import Home from "./pages/Home"
 import Explore from "./components/Explore/Explore";
 import Conversations from "./components/Conversations/Conversations";
@@ -50,94 +46,40 @@ import AddMusic from "./admin/Music/AddMusic";
 import ExplorePage from "./components/Explore/ExplorePage";
 import ExploreListenerProfile from './components/Explore/Listener/Profile'
 import AdminMusicPage from "./admin/Music/AdminMusicPage";
-import AddPlaylist from "./admin/Music/AddPlaylist";
+import ForgotPassword from "./pages/ForgotPassword";
+import Final from "./components/Register/Final";
 
 const App = () => {
   const navigate = useNavigate()
-  const dispatch = useDispatch()
-  const user = JSON.parse(sessionStorage.getItem("user")) || null
-  const listener = JSON.parse(sessionStorage.getItem("listener")) || null
+  const role = useSelector((state) => state.role?.role);
 
   useEffect(() => {
-    if (user) {
-      dispatch(setUser(user))
-    } else if (listener) {
-      dispatch(setListener(listener))
-    } else {
-      navigate("/");
+    if (window.location.pathname.startsWith('/reset-password')) {
+      return;
     }
-  }, []);
-
-  const quizData = [
-    {
-      "question": "What is the capital of France?",
-      "options": ["Paris", "London", "Berlin", "Madrid"],
-      "correctAnswer": "Paris"
-    },
-    {
-      "question": "Who wrote 'Hamlet'?",
-      "options": ["Shakespeare", "Hemingway", "Tolkien", "Dickens"],
-      "correctAnswer": "Shakespeare"
-    },
-    {
-      "question": "What is 2 + 2?",
-      "options": ["3", "4", "5", "6"],
-      "correctAnswer": "4"
-    },
-    {
-      "question": "Which planet is known as the Red Planet?",
-      "options": ["Mars", "Earth", "Jupiter", "Venus"],
-      "correctAnswer": "Mars"
+    if (role !== 'user' && role !== 'listener') {
+      navigate('/');
     }
-  ]
-  const [formData, setFormData] = useState({
-    username: '',
-    nickname: '',
-    email: '',
-    phone: '',
-    gender: '',
-    birth: '',
-    password: '',
-    confirmpassword: '',
-    education: '',
-    diploma: '',
-    fieldOfActivity: '',
-    experience: '',
-    languages: '',
-    additions: '',
-    category: '',
-    profilePic: ''
-  });
+  }, [navigate]);
 
-  const updateFormData = (data) => {
-    setFormData(prevData => ({ ...prevData, ...data }));
-  };
   return (
-
     <>
       <Routes>
         <Route path="admin" element={<PrivateRoute element={<AdminPanel />} />} >
           <Route index element={<Navigate to="users" replace />} />
           <Route path="users" element={<Users />} />
           <Route path="music" element={<AdminMusicPage />}>
-          <Route index element={<AdminMusic />} />
-          <Route path='addmusic' element={<AddMusic />} />
-          <Route path='addplaylist' element={<AddPlaylist />} />
+            <Route index element={<AdminMusic />} />
+            <Route path='addmusic' element={<AddMusic />} />
           </Route>
-          {/* <Route path="create" element={<AddMusic />} />
-          </Route> */}
-          {/* <Route path="create" element={<AddMusic />} /> */}
-
           <Route path="inform" element={<Inform />} />
         </Route>
         <Route path="/home" element={<Home />}>
           <Route index element={<Navigate to="explore" replace />} />
-          {/* <Route path="explore" element={<Layout title="Kəşf Et"><Explore /></Layout>/}> */}
 
           <Route path="explore" element={<ExplorePage />}>
-            <Route index  element={<Explore />} />
+            <Route index element={<Explore />} />
             <Route path='profile' element={<ExploreListenerProfile />} />
-            {/* <Route path="poolrequest" element={<Layout title="Yeni Müraciət Yarat"><PoolRequestForm /></Layout>} /> */}
           </Route>
           <Route path="poolrequest" element={<Layout title="Yeni Müraciət Yarat"><PoolRequestForm /></Layout>} />
           <Route path="suggest" element={<Layout title="Təklif Et"><SuggestForm /></Layout>} />
@@ -152,7 +94,7 @@ const App = () => {
             <Route path="links" element={<Links />} />
           </Route>
           <Route path="requests" element={<Layout title="Müraciətlər"><Request /></Layout>} />
-          <Route path="music" element={<Layout title="Musiqi"><Music /></Layout>} />
+          <Route path="music" element={<Music />} />
           <Route path="complaint" element={<Layout title="Bildir"><ComplaintAndInform /></Layout>} />
           <Route path="settings" element={<Settings />}>
             <Route index element={<Navigate to="profile" replace />} />
@@ -166,13 +108,14 @@ const App = () => {
         </Route>
 
         <Route path="/" element={<LoginScreen />} />
+        <Route path="/reset-password/:userId/:token" element={<ForgotPassword />} />
         <Route path="/sign-in" element={<SignInPage />} />
-        <Route path="/sign-up/*" element={<SignUpPage />}>
-          <Route path="general-info" element={<GeneralInfo formData={formData} updateFormData={updateFormData} />} />
-          <Route path="education" element={<Education formData={formData} updateFormData={updateFormData} />} />
-          <Route path="exam" element={<Exam formData={formData} updateFormData={updateFormData} />} />
+        <Route path="/sign-up" element={<SignUpPage />}>
+          <Route index element={<Navigate to="general-info" replace />} />
+          <Route path="general-info" element={<GeneralInfo />} />
+          <Route path="education" element={<Education />} />
+          <Route path="final" element={<Final />} />
         </Route>
-        <Route path="/quiz" element={<Quiz quizData={quizData} formData={formData} />} />
       </Routes>
     </>
   );

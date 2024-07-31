@@ -36,7 +36,7 @@ const Input = forwardRef(({ label, placeholder, showPassword, toggleShowPassword
                     )}
                 </button>
             </div>
-            <p className={`mt-2 text-sm ${showCheck === false ? 'text-reddark' : ''}`}>{children}</p>
+            <div className={`mt-2 text-sm ${showCheck === false ? 'text-reddark' : ''}`}>{children}</div>
         </div>
     );
 });

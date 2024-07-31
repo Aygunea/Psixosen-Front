@@ -3,10 +3,11 @@ import ListenerItem from './ListenerItem';
 import GroupItem from './GroupItem';
 import AnonymousChat from './AnonymousChat';
 import { Link, Outlet, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Explore = () => {
   const [listeners, setListeners] = useState([]);
-
+  const role = useSelector(state => state.role.role)
   const getAllListeners = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/listeners");
@@ -36,9 +37,10 @@ const Explore = () => {
       <div className='dark:text-dark50 text-light50 underline text-end w-full text-sm xs:text-[10px] px-8 xs:px-0'>
         Hamısına bax
       </div>*/}
-      <AnonymousChat />
-      <div className="py-6 px-8 xs:px-6">
-        <p className='dark:text-dark70 text-light70 text-base xs:text-sm py-[10px]'>Ən Məşhurları</p>
+      {role === 'user' && <AnonymousChat />}
+
+      <div className="py-6 lg:px-8 px-6">
+        <p className='dark:text-dark70 text-light70 lg:text-base text-sm py-[10px]'>Ən Məşhurları</p>
         {listeners?.map((listener, index) => (
           <ListenerItem
             key={listener._id}

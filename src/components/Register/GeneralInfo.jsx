@@ -1,26 +1,25 @@
-// Icons
 import OpenEye from "../../icons/OpenEye";
 import CloseEye from "../../icons/CloseEye";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { FaUser } from "react-icons/fa6";
 import { IoMdLock } from "react-icons/io";
-import { PiCalendar } from "react-icons/pi";
-
+import { PiPhone } from "react-icons/pi";
 // React Router
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // Hooks
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Redux
-import { useDispatch } from "react-redux";
-import { setUser } from "../../slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 import Input from "../Input/Input";
 import Button from "../Button/Button";
+import { updateFormData } from "../../slices/form.slice";
 
-const GeneralInfo = ({ formData, updateFormData }) => {
+const GeneralInfo = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const form = useSelector(state => state.form.form)
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const usernameRef = useRef();
@@ -29,14 +28,7 @@ const GeneralInfo = ({ formData, updateFormData }) => {
     const phoneRef = useRef();
     const passwordRef = useRef();
     const confirmRef = useRef();
-    const birthRef = useRef();
-    const genderRef = useRef();
-
-    const handleIconClick = () => {
-        console.log("Icon clicked"); // Ensure this logs when clicking the icon
-        birthRef.current.focus();
-        birthRef.current.click();
-    };
+    const [gender, setGender] = useState('');
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
@@ -49,56 +41,48 @@ const GeneralInfo = ({ formData, updateFormData }) => {
     };
 
 
-    const handleFormSubmit = (e) => {
+    const handleNext = (e) => {
         e.preventDefault();
-        updateFormData({
-          username: usernameRef.current.value,
-          nickname: nickNameRef.current.value,
-          email: emailRef.current.value,
-          phone: phoneRef.current.value,
-          birth: birthRef.current.value,
-          password: passwordRef.current.value,
-          confirmpassword: confirmRef.current.value,
-          gender: genderRef.current.value,
-          role: 'listener'
-        });
-        console.log(formData);
-      };
-
+        dispatch(updateFormData({
+            username: usernameRef.current.value,
+            nickname: nickNameRef.current.value,
+            email: emailRef.current.value,
+            phone: phoneRef.current.value,
+            password: passwordRef.current.value,
+            confirmpassword: confirmRef.current.value,
+            gender,
+            role: 'listener'
+        }));
+        console.log(form);
+        navigate('../education');
+    };
+    useEffect(() => {
+        console.log(form);
+    }, [form])
     return (
-        <form className="w-[536px] py-12 text-dark100" onSubmit={handleFormSubmit}>
+        <form className="w-[536px] xs:w-full flex flex-col gap-9 xs:gap-6 pt-12 text-dark100"
+            onSubmit={handleNext}>
             {/* Username */}
-            <button className="w-full h-[54px] mb-8 flex items-center border border-dark100 rounded-[5px] pl-7">
-                <FaUser className="mr-4 text-dark100" />
-                <input
-                    className="bg-transparent placeholder:text-dark100 w-full h-full outline-none"
+            <div className="relative h-[60px] xs:h-[50px]">
+                <FaUser className="mr-4 absolute top-1/2 -translate-y-1/2 left-6 xs:left-4 xs:text-sm text-base text-dark100" />
+                <Input
                     ref={usernameRef}
                     type="text"
                     placeholder="İstifadəçi Adı və Soyadı"
                 />
-            </button>
+            </div>
             {/* Nickname */}
-            <div className="relative h-[54px] mb-8">
-                <FaUser className="mr-4 absolute top-1/2 -translate-y-1/2 left-4 text-dark100" />
+            <div className="relative h-[60px] xs:h-[50px]">
+                <FaUser className="mr-4 absolute top-1/2 -translate-y-1/2 left-6 xs:left-4 xs:text-xs text-base text-dark100" />
                 <Input
                     ref={nickNameRef}
                     type="text"
                     placeholder="Ləqəb"
                 />
             </div>
-            {/* Birthdate */}
-            <button className="w-full h-[54px] mb-8 flex items-center border border-dark100 rounded-[5px] pl-7">
-                <PiCalendar className="mr-4 text-dark100" />
-                <input
-                    className="bg-transparent placeholder:text-dark100 w-full h-full outline-none"
-                    ref={birthRef}
-                    type="date"
-                    placeholder="Doğum Tarixi"
-                />
-            </button>
             {/* Email */}
-            <div className="relative h-[54px] mb-8">
-                <MdOutlineMailOutline className="mr-4 absolute top-1/2 -translate-y-1/2 left-4 text-dark100" />
+            <div className="relative h-[60px] xs:h-[50px]">
+                <MdOutlineMailOutline className="mr-4 absolute top-1/2 -translate-y-1/2 left-6 xs:left-4 xs:text-xs text-base text-dark100" />
                 <Input
                     ref={emailRef}
                     type="email"
@@ -106,10 +90,8 @@ const GeneralInfo = ({ formData, updateFormData }) => {
                 />
             </div>
             {/* Phone */}
-            <div className="relative h-[54px] mb-8">
-                <img
-                    src={require('../../icons/mobile.png')} alt="Icon"
-                    className="w-6 h-6 mr-4 absolute top-1/2 -translate-y-1/2 left-4 text-dark100" />
+            <div className="relative h-[60px] xs:h-[50px]">
+                <PiPhone className="mr-4 absolute top-1/2 -translate-y-1/2 left-6 xs:left-4 xs:text-xs text-base text-dark100" />
                 <Input
                     ref={phoneRef}
                     type="number"
@@ -117,8 +99,8 @@ const GeneralInfo = ({ formData, updateFormData }) => {
                 />
             </div>
             {/* Password */}
-            <div className="relative h-[54px] mb-8">
-                <IoMdLock className="mr-4 absolute top-1/2 -translate-y-1/2 left-4 text-dark100" />
+            <div className="relative h-[60px] xs:h-[50px]">
+                <IoMdLock className="mr-4 absolute top-1/2 -translate-y-1/2 left-6 xs:left-4 xs:text-xs text-base text-dark100" />
 
                 <button type="button" onClick={toggleShowPassword}
                     className="w-4 h-4 cursor-pointer absolute top-1/2 -translate-y-1/2 right-4 z-10"
@@ -127,14 +109,13 @@ const GeneralInfo = ({ formData, updateFormData }) => {
                 </button>
                 <Input
                     ref={passwordRef}
-                    type="password"
                     placeholder="Şifrə"
                 />
             </div>
 
             {/* Confirm Password */}
-            <div className="relative h-[54px] mb-7">
-                <IoMdLock className="mr-4 absolute top-1/2 -translate-y-1/2 left-4 text-dark100" />
+            <div className="relative h-[60px] xs:h-[50px]">
+                <IoMdLock className="mr-4 absolute top-1/2 -translate-y-1/2 left-6 xs:left-4 xs:text-xs text-base text-dark100" />
                 <button
                     type="button"
                     onClick={toggleShowConfirmPassword}
@@ -144,18 +125,41 @@ const GeneralInfo = ({ formData, updateFormData }) => {
                 </button>
                 <Input
                     ref={confirmRef}
-                    type="password"
                     placeholder="Şifrənizi Təsdiqləyin"
                 />
             </div>
-            {/* Gender */}
-            <div className="flex items-center mb-16">
+              {/* Gender */}
+              <div className="flex mb-16 xxs:flex-col xxs:gap-2">
+              <p className="text-lg xs:text-sm mr-8 xs:mr-1">Cinsinizi Seçin:</p>
+              <div className="flex items-center gap-1">
+                <input
+                  id="male"
+                  type="radio"
+                  name="gender"
+                  value="male"
+                  onChange={(e) => setGender(e.target.value)}
+                />
+                <label className="mr-8 xs:mr-1 text-lg xs:text-xs" htmlFor="male">Kişi</label>
+              </div>
+              <div className="flex items-center gap-1">
+                <input
+                  id="female"
+                  className="mr-1"
+                  type="radio"
+                  name="gender"
+                  value="female"
+                  onChange={(e) => setGender(e.target.value)}
+                />
+                <label className="mr-8 xs:mr-1 text-lg xs:text-xs" htmlFor="female">Qadın</label>
+              </div>
+            </div>
+            {/* <div className="flex items-center mb-16">
                 <p className="text-[18px] mr-8">Cinsinizi Seçin:</p>
                 <input ref={genderRef} id="male" className="mr-1 tex-lg" type="radio" name="gender" />
                 <label className="mr-8" htmlFor="male">Kişi</label>
                 <input ref={genderRef} id="female" className="mr-1" type="radio" name="gender" />
                 <label className="mr-8" htmlFor="female">Qadın</label>
-            </div>
+            </div> */}
 
             <Button>
                 Növbəti

@@ -9,7 +9,8 @@ import MusicReducer from "../slices/music.slice";
 import listenerRducer from "../slices/listener.slice";
 import contactsRducer from "../slices/contacts.slice";
 import notificationReducer from '../slices/notifications.slice'
-
+import requestReducer from "../slices/requests.slice";
+import formReducer from '../slices/form.slice'
 
 const store = configureStore({
     reducer: {
@@ -22,8 +23,9 @@ const store = configureStore({
         music: MusicReducer,
         listener: listenerRducer,
         contacts: contactsRducer,
-        notifications:notificationReducer
-
+        notifications: notificationReducer,
+        request:requestReducer,
+        form:formReducer
     }
 })
 export default store  

@@ -15,15 +15,22 @@ const Complaint = () => {
     };
 
     fetchComplaints();
-  }, []); // complaints asılılığını çıxarırıq
-
+  }, []); 
+  const formatDate = (time) => {
+    if (!time) return { dateString: '', timeString: '' };
+    const formattedTime = new Date(time);
+    const day = formattedTime.getDate().toString().padStart(2, '0');
+    const month = (formattedTime.getMonth() + 1).toString().padStart(2, '0');
+    const year = formattedTime.getFullYear().toString().slice(-2);
+    const dateString = `${day}.${month}.${year}`;
+    const timeString = formattedTime.toLocaleTimeString('az-AZ', { hour: '2-digit', minute: '2-digit', hour12: false });
+    return { dateString, timeString };
+  };
   return (
     <div className='py-6 flex flex-col gap-8 xs:gap-6'>
       {complaints.length > 0 ? (
         complaints.map((complaint) => {
-          const createdAt = new Date(complaint.createdAt);
-          const timeString = createdAt.toLocaleTimeString('az-AZ', { hour: '2-digit', minute: '2-digit', hour12: false });
-          const dateString = createdAt.toLocaleDateString('az-AZ', { year: '2-digit', month: '2-digit', day: '2-digit' });
+          const { dateString, timeString } = formatDate(complaint.createdAt);
           return (
             <div
               key={complaint._id}

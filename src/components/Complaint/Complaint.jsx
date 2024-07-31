@@ -9,6 +9,7 @@ const Complaint = () => {
   const [selectedValue, setSelectedValue] = useState('');
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupType, setPopupType] = useState('');
+  const [popupMessage, setPopupMessage] = useState('');
 
   const titleRef = useRef(null);
   const complainedAboutUsernameRef = useRef(null);
@@ -42,16 +43,31 @@ const Complaint = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:3000/api/complaints', complaintData);
+      const response = await fetch('http://localhost:3000/api/complaints', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(complaintData),
+      });
+      const data = await response.json();
+      if(response.ok){
+        setPopupType('success');
+        setPopupVisible(true);
+        setPopupMessage(data.message)
+      }
+      if(!response.ok){
+        setPopupType('failed');
+        setPopupVisible(true);
+        setPopupMessage(data.message)
+      }
       titleRef.current.value = '';
       complainedAboutUsernameRef.current.value = '';
       descriptionRef.current.value = '';
-      setPopupType('success');
-      setPopupVisible(true);
-      console.log('Complaint submitted successfully:', response.data);
     } catch (error) {
       setPopupType('failed');
       setPopupVisible(true);
+      setPopupMessage("Server xətası")
       console.error('Error submitting complaint:', error);
     }
   };
@@ -62,7 +78,7 @@ const Complaint = () => {
 
   return (
     <>
-      <form className='w-[536px] xs:w-[382px] flex flex-col gap-9 xs:gap-8' onSubmit={handleSubmit}>
+      <form className='md:w-[536px] w-full flex flex-col md:gap-9 gap-8' onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4">
           <label htmlFor="title" className='text-gray10 dark:text-dark100 text-base xs:tex-sm'>
             Şikayətin başlığı:
@@ -76,7 +92,7 @@ const Complaint = () => {
               value={selectedValue}
               readOnly
               ref={titleRef}
-              className="w-full h-[60px] xs:h-[42px] xs:text-xs placeholder-light70 text-sm xs:px-4 px-6 outline-none dark:bg-dark300 bg-lightgray dark:text-dark70 text-light70 rounded-[10px] xs:rounded-[5px]"
+              className="w-full md:h-[60px] h-[50px] xs:text-xs placeholder-light70 text-sm xs:px-4 px-6 outline-none dark:bg-dark300 bg-lightgray dark:text-dark70 text-light70 rounded-[10px] xs:rounded-[5px]"
             />
             <FaChevronDown className={`absolute top-1/2 -translate-y-1/2 right-4 xs:text-xs text-dark70 ${isOpen ? 'rotate-180' : ''}`} />
           </div>
@@ -100,7 +116,7 @@ const Complaint = () => {
           </label>
           <input id="name" type="text" placeholder='Ləqəb'
             ref={complainedAboutUsernameRef}
-            className="w-full h-[60px] xs:h-[42px] xs:text-xs text-sm xs:px-4 px-6 outline-none placeholder-light70 dark:bg-dark300 bg-lightgray text-dark70 rounded-[10px] xs:rounded-[5px]"
+            className="w-full md:h-[60px] h-[50px] xs:text-xs text-sm xs:px-4 px-6 outline-none placeholder-light70 dark:bg-dark300 bg-lightgray dark:text-dark70 text-light70 rounded-[10px] xs:rounded-[5px]"
           />
         </div>
         {/* Daha Ətraflı */}
@@ -110,14 +126,14 @@ const Complaint = () => {
           </label>
           <textarea id="text" type="text" placeholder='Qeydləri daxil edin...'
             ref={descriptionRef}
-            className="w-full placeholder-light70 h-[156px] xs:h-[140px] xs:text-xs text-sm py-4 xs:px-4 px-6 outline-none dark:bg-dark300 bg-lightgray text-dark70 rounded-[10px] xs:rounded-[5px]"
+            className="w-full placeholder-light70 h-[156px] xs:h-[140px] xs:text-xs text-sm py-4 xs:px-4 px-6 outline-none dark:bg-dark300 bg-lightgray dark:text-dark70 text-light70 rounded-[10px] xs:rounded-[5px]"
           ></textarea>
         </div>
-        <div className="flex gap-9 xs:gap-4 w-[536px] xs:w-full xs:py-4">
-          <button type="button" className='dark:text-green text-lightgreen dark:border-green border-lightgreen border-[3px] w-full py-4 xs:py-[9px] text-base xs:text-sm rounded-[10px]'>
+        <div className="flex lg:gap-9 gap-4 w-full xs:py-4">
+          <button type="button" className='dark:text-green text-lightgreen dark:border-green border-lightgreen border-[3px] lg:h-[60px] h-[42px] w-full text-base xs:text-sm rounded-[10px]'>
             Ləğv Et
           </button>
-          <button type="submit" className='dark:bg-green bg-lightgreen dark:text-dark100 rounded-[10px] py-4 xs:py-[9px] text-base xs:text-sm w-full '>
+          <button type="submit" className='dark:bg-green bg-lightgreen text-dark100 lg:h-[60px] h-[42px] rounded-[10px]  text-base xs:text-sm w-full '>
             Göndər
           </button>
         </div>
@@ -125,8 +141,7 @@ const Complaint = () => {
       {/* popup */}
       {
         popupVisible && <Popup
-          message={popupType === 'success' ? "Sizin şikayətiniz uğurla göndərildi!" :
-            "Şikayətiniz uğursuz oldu. Zəhmət olmasa yenidən cəhd edin və ya dəstək xidmətimizlə əlaqə saxlayın."}
+          message={ popupMessage}
           type={popupType}
           onClose={closePopup} />
       }

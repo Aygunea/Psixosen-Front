@@ -3,28 +3,27 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 const AnonymousChat = () => {
-    const dispatch = useDispatch();
     const darkMode = useSelector((state) => state.theme.darkMode);
 
     return (
-        <div className='dark:bg-dark300 bg-dark100 grid grid-cols-[auto_92px] xs:grid-cols-1 gap-[37px] mt-[21px] px-8 xs:px-2'>
+        <div className='dark:bg-dark300 bg-dark100 grid md:grid-cols-[auto_92px] grid-cols-1 gap-[37px] mt-[21px] px-8 xs:px-2'>
             <div className='flex flex-col py-4 mr-8'>
-                <div className='flex items-center gap-2'>
-                    <div className='pr-[160px] xs:pr-0'>
-                        <p className='dark:text-dark100 text-gray10 text-2xl xs:text-sm mb-[10px]'>Anonim Dinləyici Çatı</p>
-                        <div className='dark:text-dark70 text-light70 mb-4 xs:text-xs'>
+                <div className='md:flex md:items-center gap-4 grid grid-cols-[auto_64px] xxs:grid-cols-[auto_48px]'>
+                    <div className='md:pr-[160px] pr-0'>
+                        <p className='dark:text-dark100 text-gray10 md:text-2xl sm:text-lg text-base mb-[10px]'>Anonim Dinləyici Çatı</p>
+                        <div className='dark:text-dark70 text-light70 mb-4 md:text-base xs:text-xs text-sm'>
                             Təsadüfi mütəxəssis seçimi əsasında Anonim Dinləyici Çatını başlatmaq  üçün
                             <span className='xs:text-sm dark:text-dark100 text-gray10'> “Müraciət et” </span>
                             düyməsinə klikləyin.
                         </div>
                     </div>
                     {/* mobile icon */}
-                    <div className='xs:w-16 xs:block hidden'>
-                        {darkMode ? <img
-                            className='w-full'
-                            src={require('../../images/icons.png')} alt="" /> :
-                            <img
-                                className='w-full '
+                    <div className='block md:hidden'>
+                        {darkMode ?
+                            <img className='w-full'
+                                src={require('../../images/icons.png')} alt="" /> :
+
+                            <img className='w-full '
                                 src={require('../../images/iconslight.png')} alt="" />
                         }
                     </div>
@@ -39,7 +38,7 @@ const AnonymousChat = () => {
                 </Link>
             </div>
             {/* desktop icon */}
-            <div className='xs:hidden block'>
+            <div className='hidden md:block'>
                 {darkMode ? <img
                     className='w-[92px] h-full'
                     src={require('../../images/icons.png')} alt="" /> :

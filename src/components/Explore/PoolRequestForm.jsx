@@ -1,24 +1,26 @@
 import React, { useEffect, useRef, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaChevronDown } from 'react-icons/fa';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
 import Popup from '../Popup/Popup';
+import { useNavigate } from 'react-router-dom';
 
 const PoolRequestForm = () => {
   const detailsRef = useRef()
-  const listenerId = useSelector(state => state.listener.listenerId)
   const [isOpen, setIsOpen] = useState(false);
   const [topic, setTopic] = useState('');
   const [selectedOption, setSelectedOption] = useState(null);
   //popup
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupType, setPopupType] = useState('');
+  const [popupMessage, setPopupMessage] = useState('');
+
+  const navigate = useNavigate()
 
   const closePopup = () => {
     setPopupVisible(false);
+    navigate('../explore')
   };
-  console.log(listenerId + "listener");
+
   const options = [
     { duration: 15, price: 15 },
     { duration: 30, price: 20 },
@@ -54,7 +56,6 @@ const PoolRequestForm = () => {
       details: detailsRef.current?.value,
       price: selectedOption?.price,
     };
-    console.log(requestData);
     try {
       const response = await fetch('http://localhost:3000/api/sessions/poolrequest', {
         method: 'POST',
@@ -65,19 +66,19 @@ const PoolRequestForm = () => {
       });
 
       const data = await response.json();
-      console.log('Submitted Data:', data);
 
       if (response.ok) {
         setPopupType('success');
+        setPopupMessage(data.message);
         setPopupVisible(true);
       } else {
         setPopupType('failed');
+        setPopupMessage(data.message);
         setPopupVisible(true);
       }
     } catch (error) {
       console.error('Error submitting request:', error);
     }
-
   };
 
   return (
@@ -107,15 +108,6 @@ const PoolRequestForm = () => {
               ))}
             </ul>
           )}
-          {/* {isOpen && (
-            <ul className="mt-3 text-light70 dark:text-dark70 dark:bg-dark300 bg-dark100 text-base rounded-[10px]">
-              {titles.map((topic, index) => (
-                <li key={index} onClick={() => handleSelectTopic(topic)} className={`px-6 py-3 cursor-pointer border-light20 dark:border-dark20 ${index !== titles.length - 1 ? 'border-b' : ''}`}>
-                  {topic}
-                </li>
-              ))}
-            </ul>
-          )} */}
         </div>
 
         {/* duration */}
@@ -162,8 +154,7 @@ const PoolRequestForm = () => {
       </form>
       {
         popupVisible && <Popup
-          message={popupType === 'success' ? "Sizin təklifiniz uğurla göndərildi!" :
-            "Təklifiniz uğursuz oldu. Zəhmət olmasa yenidən cəhd edin və ya dəstək xidmətimizlə əlaqə saxlayın."}
+          message={popupMessage}
           type={popupType}
           onClose={closePopup} />
       }

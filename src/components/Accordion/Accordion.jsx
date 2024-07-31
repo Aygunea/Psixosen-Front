@@ -16,7 +16,7 @@ const Accordion = ({ categories, placeholder, onSelect }) => {
     };
 
     return (
-        <div className="flex flex-col gap-4 mb-9">
+        <div className="flex flex-col gap-4">
             <div className="relative">
                 <input
                     type="text"
@@ -24,17 +24,17 @@ const Accordion = ({ categories, placeholder, onSelect }) => {
                     onClick={handleToggle}
                     value={selectedValue}
                     readOnly
-                    className="w-full h-[60px] text-base py-3 pl-4 leading-9 outline-none placeholder:text-dark100 bg-transparent border border-dark100 text-dark100 rounded-[10px]"
+                    className="w-full h-[60px] xs:h-[50px] text-base xs:text-xs py-3 pl-4 leading-9 outline-none placeholder:text-dark100 bg-transparent border border-dark100 text-dark100 rounded-[10px]"
                 />
-                <FaChevronDown className={`absolute top-1/2 -translate-y-1/2 right-4 text-dark100 ${isOpen ? 'rotate-180' : ''}`} />
+                <FaChevronDown className={`xs:text-xs absolute top-1/2 -translate-y-1/2 right-4 text-dark100 ${isOpen ? 'rotate-180' : ''}`} />
             </div>
 
             {isOpen && (
-                <ul className="py-1 mt-5 bg-dark border border-dark100 rounded-[10px]">
+                <ul className="py-1 mt-5 xs:mt-2 bg-dark border border-dark100 rounded-[10px] xs:text-xs">
                     {categories.map((category, index) => (
                         <li key={index}
                             onClick={() => handleSelect(category)}
-                            className={`px-6 py-3 cursor-pointer border-dark100 ${index !== categories.length - 1 ? 'border-b' : ''}`}>
+                            className={`px-6 h-[60px] xs:h-[40px] leading-[60px] xs:leading-[40px] cursor-pointer border-dark100 ${index !== categories.length - 1 ? 'border-b' : ''}`}>
                             {category}
                         </li>
                     ))}

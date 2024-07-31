@@ -24,7 +24,6 @@ const Notifications = () => {
           }
         });
         dispatch(setNotifications(response.data));
-        console.log(response.data);
       } catch (error) {
         console.error('Error fetching notifications:', error);
       }
@@ -32,16 +31,16 @@ const Notifications = () => {
 
     fetchNotifications();
   }, [userId, listenerId, userModel, dispatch]);
-  useEffect(() => {
-    console.log(notifications);
+  // useEffect(() => {
+  //   console.log(notifications);
 
-  }, [notifications])
+  // }, [notifications])
   const handleDelete = (id) => {
     dispatch(deleteNotification(id));
   };
 
   return (
-    <div className='py-6 flex flex-col gap-8 xs:gap-6'>
+    <div className='lg:py-6 flex flex-col lg:gap-8 gap-5'>
       {notifications.length > 0 ? (
         notifications.map(notification => (
           <Notification

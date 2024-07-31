@@ -7,10 +7,10 @@ import { useSelector } from 'react-redux'
 const Profile = () => {
     const role = useSelector(state => state.role.role)
     return (
-        <div className='xs:mt-16 px-8 xs:px-6'>
+        <div className='xs:mt-16 p-8 xs:px-6'>
             <div className="dark:bg-dark300 bg-lightgray p-6 rounded-[10px] mb-8 flex xs:flex-col justify-between xs:gap-4 sm:items-end">
-                <div className="pt-4 relative flex gap-8 xs:gap-3 xs:flex-col xs:items-center">
-                    <div className='xs:absolute xs:-top-1/2 xs:-translate-y-1/2 w-[120px] h-[120px] xs:w-24 xs:h-24 rounded-full overflow-hidden dark:opacity-60 opacity-80'>
+                <div className="relative flex gap-8 xs:gap-3 xs:flex-col xs:items-center">
+                    <div className='xs:absolute xs:-top-3/4 xs:-translate-y-1/2 w-[120px] h-[120px] xs:w-24 xs:h-24 rounded-full overflow-hidden dark:opacity-60 opacity-80'>
                         <img
                             src={require('../../../images/profilePic.jpeg')} alt="Icon"
                             className="w-full h-full"
@@ -27,18 +27,17 @@ const Profile = () => {
                     </div>
                 </div>
                 {role === 'user' && (
-                    <div className='flex items-center gap-6 xs:gap-3 xs:justify-center'>
-                        <Link to="../specificpool">
+                    <div className='flex items-center gap-6 xs:gap-3 xs:justify-center '>
+                        {/* <Link to="../specificpool">
                             <button
-                                // onClick={() => dispatch(setListener(listener))}
-                                className='dark:bg-green bg-lightgreen w-[171px] xs:w-[124px] rounded-[5px] py-[10px] xs:py-[7.5px] text-xs xs:text-[10px] text-dark100'>
+                                className='dark:bg-green bg-lightgreen w-[165px] xs:w-[80px] rounded-[5px] py-[10px] xs:py-[7.5px] text-xs xs:text-[10px] text-dark100'>
                                 Müraciət et
                             </button>
-                        </Link>
+                        </Link> */}
                         <Link to="../suggest">
                             <button
                                 // onClick={() => dispatch(setListener(listener))}
-                                className='dark:bg-blue100 bg-lightblue w-[171px] xs:w-[124px] rounded-[5px] py-[10px] xs:py-[7.5px] text-xs xs:text-[10px] text-dark100'>
+                                className='dark:bg-blue100 bg-lightblue w-[165px] xs:w-[80px] rounded-[5px] py-[10px] xs:py-[7.5px] text-sm xs:text-[10px] text-dark100'>
                                 Təklif et
                             </button>
                         </Link>

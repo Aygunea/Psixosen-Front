@@ -19,6 +19,16 @@ const messagesSlice = createSlice({
                 state.messages[index] = action.payload; // Güncellenen mesajı yerleştir
             }
         },
+        updateMessageReadStatus: (state, action) => {
+            return {
+                ...state,
+                messages: state.messages.map(message =>
+                    message._id === action.payload
+                        ? { ...message, read: true }
+                        : message
+                ),
+            };
+        },
         addUnReadMessage: (state, action) => {
             state.unReadMessages.push(action.payload); // Yeni mesajı mevcut diziye ekle
         },
@@ -28,5 +38,5 @@ const messagesSlice = createSlice({
     }
 })
 
-export const { setMessage, addMessage, updateMessage, setUnReadMessages,addUnReadMessage } = messagesSlice.actions;
+export const { setMessage, addMessage, updateMessage, setUnReadMessages,addUnReadMessage,updateMessageReadStatus } = messagesSlice.actions;
 export default messagesSlice.reducer

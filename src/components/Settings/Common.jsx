@@ -11,7 +11,7 @@ const Common = () => {
     { title: "Profilim", path: "profile" },
     { title: "Şifrə", path: "password" },
     { title: "Tarixçə", path: "history" },
-    { title: "Maliyyə", path: "finance" },
+    // { title: "Maliyyə", path: "finance" },
     // { title: "Statistika", path: "statistics" },
     { title: "Bildirişlər", path: "notifications" },
     // { title: "Tərzim", path: "design" }
@@ -40,8 +40,8 @@ const Common = () => {
     };
   }, []);
   return (
-    <div className='h-full bg-transparent sm:dark:bg-darkblack sm:bg-lightwhite rounded-[10px] pt-9 px-8 xs:px-6'>
-      <ul className='xs:overflow-x-auto scrollbar-hide xs:text-xs w-full mb-9 grid grid-flow-col grid-cols-5 xs:grid-cols-[100px] text-center gap-7 xs:gap-[6px] bg-lightgray text-light50 dark:bg-dark300 dark:text-dark50 px-2 xs:px-[6px] rounded-[5px]'>
+    <div className='h-full bg-transparent lg:dark:bg-darkblack lg:bg-lightwhite rounded-[10px] pt-9 lg:px-8 px-6'>
+      <ul className='xs:overflow-x-auto scrollbar-hide xs:text-xs w-full mb-9 grid grid-flow-col grid-cols-4 xs:grid-cols-[100px] text-center gap-7 xs:gap-[6px] bg-lightgray text-light50 dark:bg-dark300 dark:text-dark50 px-2 xs:px-[6px] rounded-[5px]'>
         {settingsMenu.map((item, index) => (
           <NavLink
             key={index}
@@ -55,7 +55,7 @@ const Common = () => {
       </ul>
       <div
         ref={contentRef}
-        className={`overflow-y-auto sm:scrollbar xs:scrollbar-hide xs:h-full xs:pb-12 sm:h-[calc(100%-150px)] ${hasScroll ? 'pr-8' : ''}`}
+        className={`md:overflow-y-auto xs:scrollbar-hide sm:xs:scrollbar-hide md:scrollbar h-full xs:pb-12 lg:h-[calc(100%-150px)] ${hasScroll ? 'pr-8' : ''}`}
       >
         <Outlet />
       </div>

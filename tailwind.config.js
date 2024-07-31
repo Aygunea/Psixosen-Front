@@ -5,7 +5,8 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        'xs': {'max': '430px'},
+        'xs': {'max': '640px'},
+        'xxs': {'max': '400px'},
       },
       boxShadow: {
         'custom': '0px 4px 4px rgba(0, 0, 0, 0.25), -4px 0px 4px rgba(0, 0, 0, 0.25)',
@@ -80,7 +81,7 @@ module.exports = {
       addUtilities({
         '.scrollbar': {
           '&::-webkit-scrollbar': {
-            width: '10px',
+            width: '4px',
           },
           '&::-webkit-scrollbar-track': {
             boxShadow: 'inset 0 0 5px grey',

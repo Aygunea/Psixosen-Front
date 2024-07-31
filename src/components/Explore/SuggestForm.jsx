@@ -1,39 +1,43 @@
 import React, { useEffect, useRef, useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaChevronDown } from 'react-icons/fa';
-import axios from 'axios';
 import { useSelector } from 'react-redux';
 import Popup from '../Popup/Popup';
+import { useNavigate } from 'react-router-dom';
+import moment from 'moment';
 
 const SuggestForm = () => {
   //popup
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupType, setPopupType] = useState('');
+  const navigate = useNavigate()
 
   const detailsRef = useRef()
-  const listener = useSelector(state => state.listener.listener)
+  const listenerId = useSelector(state => state.listener?.listenerId)
   const [isOpen, setIsOpen] = useState(false);
   const [topic, setTopic] = useState('');
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedOption, setSelectedOption] = useState(null);
-
+  const [listener, setListener] = useState(null)
+  const combinedDateTime = moment(`${selectedDate?.toDateString()} ${selectedTime}`, 'ddd MMM DD YYYY HH:mm')?.toISOString();
+  const [reservedSlots, setReservedSlots] = useState([])
   const options = [
     { duration: 15, price: 15 },
     { duration: 30, price: 20 },
     { duration: 60, price: 30 },
     { duration: 90, price: 40 },
   ];
-
   const handleOptionClick = (option) => {
     setSelectedOption(option);
-    // console.log(selectedOption);
   };
   const handleToggle = () => setIsOpen(!isOpen);
+
   const handleSelectTopic = (topic) => {
     setTopic(topic);
     setIsOpen(false);
   };
+
   const daysOfWeek = [
     "Bazar ertəsi",
     "Çərşənbə axşamı",
@@ -89,9 +93,9 @@ const SuggestForm = () => {
   // saat secimi
   const generateTimeSlots = () => {
     const timeSlots = [];
-    const startTime = 9; // Seher 9-da baslayir
-    const endTime = 24; // Aksam 00:00-da sona catir
-    const slotDuration = 0.5; // Slot araligi yarim saat (30 deqiqe)
+    const startTime = 9;
+    const endTime = 21;
+    const slotDuration = 0.5;
 
     let currentTime = startTime;
     while (currentTime < endTime) {
@@ -118,77 +122,88 @@ const SuggestForm = () => {
     "Koçinq",
     "Karyera"
   ];
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const requestData = {
-  //     topic: topic,
-  //     duration: selectedOption?.duration,
-  //     details: detailsRef.current?.value,
-  //     price: selectedOption?.price,
-  //     sessionStartTime: selectedDate?.toISOString(), // Format as ISO string
-  //   };
-  //   console.log(requestData);
-  //   try {
-  //     const response = await axios.post(`http://localhost:3000/api/sessions/suggest/${listener._id}`, requestData);
-  //     console.log('Submitted Data:', response.data);
-  //     setPopupType('success');
-  //     setPopupVisible(true);
-  //   } catch (error) {
-  //     console.error('Error submitting request:', error);
-  //     setPopupType('failed');
-  //     setPopupVisible(true);
-  //   }
-  // };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Burada bütün seçilmiş məlumatları yoxlayın
-    if (!topic || !selectedDate || !selectedTime || !selectedOption) {
-      setPopupType('failed');
-      setPopupVisible(true);
-      return;
-    }
-
-    // Seçilmiş tarix və saatı birləşdirin
-    const [hours, minutes] = selectedTime.split(':');
-    const sessionStartTime = new Date(selectedDate);
-    sessionStartTime.setHours(hours);
-    sessionStartTime.setMinutes(minutes);
-
-    const requestData = {
-      topic,
-      duration: selectedOption.duration,
-      details: detailsRef.current.value,
-      price: selectedOption.price,
-      sessionStartTime: sessionStartTime.toISOString(), // Format as ISO string
+  useEffect(() => {
+    const fetchAvailableSlots = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/sessions/available-slots/${listenerId}`);
+        const data = await response.json();
+        if (response.ok) {
+          setReservedSlots(data);
+        }
+      } catch (error) {
+        console.log('Error fetching available slots:', error);
+      }
     };
 
-    try {
-      const response = await axios.post(`http://localhost:3000/api/sessions/suggest/${listener._id}`, requestData);
-      console.log('Submitted Data:', response.data);
-      // setPopupType('success');
-      // setPopupVisible(true);
-    } catch (error) {
-      console.error('Error submitting request:', error);
-      // setPopupType('failed');
-      // setPopupVisible(true);
+    if (listenerId) {
+      fetchAvailableSlots();
     }
+  }, [listenerId]);
+
+  const isSlotReserved = (dateTime) => {
+    return reservedSlots.some(slot => {
+      const slotStart = new Date(slot.sessionStartTime);
+      const slotEnd = new Date(slot.endTime);
+      return dateTime >= slotStart && dateTime < slotEnd;
+    });
   };
 
+
+  useEffect(() => {
+    const fetchListener = async () => {
+      try {
+        if (listenerId) {
+          const response = await fetch(`http://localhost:3000/api/listeners/specific/${listenerId}`);
+          const data = await response.json();
+          if (response.ok) {
+            setListener(data)
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchListener();
+  }, [listenerId]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`http://localhost:3000/api/sessions/suggest/${listenerId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(
+          {
+            topic,
+            duration: selectedOption?.duration,
+            details: detailsRef.current?.value,
+            price: selectedOption?.price,
+            sessionStartTime: combinedDateTime
+          }
+        )
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('Submitted Data:', data);
+        setPopupType('success');
+        setPopupVisible(true);
+      } else {
+        console.log('Error:', data.message);
+      }
+    } catch (error) {
+      console.error('Error submitting request:', error);
+      setPopupType('failed');
+      setPopupVisible(true);
+    }
+  };
 
   const closePopup = () => {
     setPopupVisible(false);
+    navigate('../explore')
   };
-  useEffect(() => {
-    console.log((selectedDate && selectedDate.toDateString()) + "selected");
 
-  }, [selectedDate])
-  useEffect(() => {
-    dates.map(date => {
-      console.log(date.toDateString());
-    })
-
-  }, [dates])
   return (
     <>
       <form className='flex flex-col gap-9 xs:gap-8' onSubmit={handleSubmit}>
@@ -199,6 +214,7 @@ const SuggestForm = () => {
 
           <div className="flex items-center w-max h-[54px] xs:h-[42px] placeholder:text-light70 dark:placeholder:text-dark70 text-lg xs:text-sm px-[60px] outline-none dark:bg-dark300 bg-lightgray dark:text-dark70 text-light70 rounded-[10px]">
             {listener?.nickname}
+
           </div>
           <label htmlFor="title" className='text-gray10 dark:text-dark100 text-base xs:text-sm'>
             Müraciət Mövzusu:
@@ -232,10 +248,11 @@ const SuggestForm = () => {
           <div className="gap-[18px] xs:gap-4 grid grid-cols-7 xs:grid-cols-[repeat(auto-fill,_110px)] grid-flow-col overflow-x-auto scrollbar-hide">
             {dates.map((date, index) => (
               <button
+                type='button'
                 onClick={() => setSelectedDate(date)}
                 key={index}
-                className={`py-[10px] xs:h-12 xs:min-w-[110px] dark:bg-dark300 bg-lightgray rounded-[10px]
-    ${selectedDate && selectedDate.toDateString() == date.toDateString() ? 'bg-blue100 text-dark100' : 'bg-lightgray dark:bg-dark300'}`}
+                className={`py-[10px] xs:h-12 xs:min-w-[110px] rounded-[10px]
+               ${selectedDate && selectedDate.toDateString() == date.toDateString() ? 'bg-blue100 text-dark100' : 'bg-lightgray dark:bg-dark300'}`}
               >
                 {date.getDate() === today.getDate() ? (
                   <>
@@ -252,23 +269,40 @@ const SuggestForm = () => {
             ))}
           </div>
         </div>
-
         {/* Time */}
-        <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-8 xs:grid-cols-4 gap-4 xs:gap-3">
+          {timeSlots.map((time, index) => {
+            const dateTime = new Date(`${selectedDate?.toDateString()} ${time}`);
+            const reserved = isSlotReserved(dateTime);
+            return (
+              <button
+                onClick={() => !reserved && setSelectedTime(time)}
+                className={`rounded-[5px] py-4 xs:py-[10px] text-xs text-dark100 ${reserved ? 'bg-gray-300 cursor-not-allowed' : (selectedTime === time ? 'bg-blue100 text-dark100' : 'bg-lightgray dark:bg-dark300')}`}
+                type='button'
+                key={index}
+                disabled={reserved}
+              >
+                {time}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* <div className="flex flex-col gap-4">
           <div className="text-gray10 dark:text-dark100 text-base xs:text-sm">Saat seçin:</div>
           <div className="grid grid-cols-8 xs:grid-cols-4 gap-4 xs:gap-3">
             {timeSlots.map((time, index) => (
               <button
                 onClick={() => setSelectedTime(time)}
                 className={`rounded-[5px] py-4 xs:py-[10px] text-xs text-dark100 ${selectedTime === time ? 'bg-blue100 text-dark100' : 'bg-lightgray dark:bg-dark300'}`}
-
+                type='button'
                 key={index}
               >
                 {time}
               </button>
             ))}
           </div>
-        </div>
+        </div> */}
         {/* duration */}
         <div className="flex flex-col gap-4 w-[536px] xs:w-full">
           <div className='text-gray10 dark:text-dark100 text-base xs:text-sm'>
@@ -311,13 +345,13 @@ const SuggestForm = () => {
           </button>
         </div>
       </form>
-      {/* {
+      {
         popupVisible && <Popup
           message={popupType === 'success' ? "Sizin təklifiniz uğurla göndərildi!" :
             "Təklifiniz uğursuz oldu. Zəhmət olmasa yenidən cəhd edin və ya dəstək xidmətimizlə əlaqə saxlayın."}
           type={popupType}
           onClose={closePopup} />
-      } */}
+      }
     </>
   );
 }

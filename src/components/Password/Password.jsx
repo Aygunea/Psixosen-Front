@@ -107,9 +107,9 @@ const Password = () => {
                     toggleShowPassword={toggleShowOldPassword}
                     onChange={handleInputChange}
                 >
-                    <p className='xs:text-xs'>
+                    <div className='xs:text-xs'>
                         {isCurrentPasswordCorrect === false && 'Yalnış şifrə. Yenidən sınayın və ya  İndi sıfırlayın.'}
-                    </p>
+                    </div>
                 </Input>
             </div>
             <div className="relative">
@@ -134,9 +134,9 @@ const Password = () => {
                     toggleShowPassword={toggleShowConfirmPassword}
                     onChange={handleInputChange}
                 >
-                    <p className='xs:text-xs'>
+                    <div className='xs:text-xs'>
                         {doNewPasswordsMatch === false && 'Şifrələr uyğun deyil. Yenidən daxil edin.'}
-                    </p>
+                    </div>
                 </Input>
             </div>
             <button className='xs:text-sm dark:bg-dark300 bg-light200 dark:text-dark70 text-light70 p-3 rounded-[10px] w-full' style={{ letterSpacing: '0.5px' }}>

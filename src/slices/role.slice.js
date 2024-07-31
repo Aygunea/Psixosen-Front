@@ -9,7 +9,6 @@ const RoleReducer = createSlice({
   reducers: {
     setRole: (state, action) => {
       state.role = action.payload;
-      // sessionStorage.setItem("role", JSON.stringify(action.payload));
       sessionStorage.setItem("role", action.payload);
     },
     clearRole: (state) => {
