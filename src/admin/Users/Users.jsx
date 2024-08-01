@@ -10,18 +10,18 @@ const Users = () => {
     };
 
     return (
-        <div className='p-8'>
+        <div className='lg:p-8 p-5'>
             <div className='flex gap-4 pb-8'>
                 <button
                     onClick={() => handleClick('Danışan')}
-                    className={`w-[150px] text-lg font-semibold p-3 rounded-[5px] text-light70 
+                    className={`lg:w-[150px] w-20 text-sm lg:text-lg font-semibold p-3 rounded-[5px] text-light70 
               ${activeButton === 'Danışan' ? 'text-darkblack bg-lightgray opacity-100' : 'bg-transparent opacity-70'}`}
                 >
                     Danışan
                 </button>
                 <button
                     onClick={() => handleClick('Dinləyici')}
-                    className={`w-[150px] text-lg font-semibold p-3 rounded-[5px] text-light70 
+                    className={`lg:w-[150px] w-20 text-sm lg:text-lg font-semibold p-3 rounded-[5px] text-light70 
               ${activeButton === 'Dinləyici' ? 'text-darkblack bg-lightgray opacity-100' : 'bg-transparent opacity-70'}`}
                 >
                     Dinləyici

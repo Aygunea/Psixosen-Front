@@ -33,42 +33,69 @@ const Talker = () => {
         return { dateString };
     };
     return (
-        <div>
+        <div className="w-full">
             {talkers.length > 0 ? (
-                <table className='border-b border-darkgray text-center w-full'>
-                    <thead>
-                        <tr className='border-b border-darkgray'>
-                            {headers.map((header, index) => (
-                                <th key={index}
-                                    className={`text-gray10 text-base font-medium py-[10px] border-b border-darkgray ${index !== headers.length - 1 ? 'border-r' : ''}`}                                 >
-                                    {header}
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody className='w-full'>
+                <div className='w-full'>
+                    <table className='md:table hidden w-full border-darkgray text-center'>
+                        <thead className='w-full'>
+                            <tr className='border-b border-darkgray w-full grid grid-cols-3'>
+                                {headers.map((header, index) => (
+                                    <th
+                                        key={index}
+                                        className={`text-gray10 text-base font-medium py-[10px] border-darkgray ${index !== headers.length - 1 ? 'border-r' : ''}`}
+                                    >
+                                        {header}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody className='w-full'>
+                            {talkers.map((talker, rowIndex) => {
+                                const { dateString } = formatDate(talker.createdAt);
+                                return (
+                                    <tr key={rowIndex} className='border-b border-darkgray w-full grid grid-cols-3'>
+                                        <td className='text-gray10 text-base py-[11.5px] border-r border-darkgray'>
+                                            {talker.username}
+                                        </td>
+                                        <td className='text-gray10 text-base py-[11.5px] border-r border-darkgray'>
+                                            {dateString}
+                                        </td>
+                                        <td className='text-gray10 text-base py-[11.5px]'>
+                                            <div className='flex justify-center items-center gap-3'>
+                                                <button className='bg-redlight300 rounded-[5px] py-2 px-[10px] text-sm text-dark100'>
+                                                    Deaktiv et
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                    <div className='flex flex-col md:hidden gap-4'>
                         {talkers.map((talker, rowIndex) => {
-                             const { dateString } = formatDate(talker.createdAt);
+                            const { dateString } = formatDate(talker.createdAt);
                             return (
-                                <tr key={rowIndex} className='w-full'>
-                                    <td className='text-gray10 text-base py-[11.5px] border-b border-darkgray border-r'>
-                                        {talker.username}
-                                    </td>
-                                    <td className='text-gray10 text-base py-[11.5px] border-b border-darkgray border-r'>
-                                        {dateString}
-                                    </td>
-                                    <td className='text-gray10 text-base py-[11.5px] border-b border-darkgray'>
-                                        <div className='flex justify-center items-center gap-3'>
-                                            <button className='bg-redlight300  rounded-[5px] py-2 px-[10px] text-sm text-dark100'>
-                                                Deaktiv et
-                                            </button>
+                                <div key={rowIndex} className="flex justify-between border border-ligh20 py-3 px-4 rounded-[5px] md:hidden
+                                  hover:bg-lightgray">
+                                    <div className="grid grid-rows-2 gap-4">
+                                        <div className='grid grid-cols-2 gap-6'>
+                                            <div className='text-xs sm:text-sm text-light70'>Danışan</div>
+                                            <div className='text-sm  text-gray10'>  {talker.username}</div>
                                         </div>
-                                    </td>
-                                </tr>
-                            );
+                                        <div className="grid grid-cols-2 gap-6">
+                                            <div className='text-xs sm:text-sm text-light70'>Qeydiyyat Tarixi</div>
+                                            <div className='text-xs sm:text-sm text-light70'>
+                                                {dateString}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            )
                         })}
-                    </tbody>
-                </table>
+                    </div>
+                </div>
             ) : <p className='text-lg text-gray10'>Danışan yoxdur</p>}
         </div>
     );

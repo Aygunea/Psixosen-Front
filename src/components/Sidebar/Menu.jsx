@@ -49,7 +49,7 @@ const menu = [
 
 const Menu = () => {
   return (
-    <ul className="text-darkgray dark:text-dark100 flex flex-col gap-2 xs:px-1 lg:w-[215px] w-[180px]">
+    <ul className="text-darkgray dark:text-dark100 flex flex-col gap-2 xs:px-1 lg:w-[215px]">
       {menu.map((item, index) => (
         <NavLink
           key={index}
@@ -58,7 +58,7 @@ const Menu = () => {
         >
           <li className="flex items-center gap-2 xs:gap-0">
            <p className='xs:text-xs'> {item.icon}</p>
-            <p className="sm:block hidden text-sm lg:text-lg">{item.title}</p>
+            <p className="lg:block hidden text-sm lg:text-lg">{item.title}</p>
           </li>
         </NavLink>
       ))

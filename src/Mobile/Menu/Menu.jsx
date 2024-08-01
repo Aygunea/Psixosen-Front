@@ -10,10 +10,10 @@ const Menu = () => {
     return (
         <button
             onClick={showMenu}
-            className='xs:block hidden xs:fixed xs:z-10 xs:top-1/2 xs:-translate-y-1/2 xs:right-0 xs:text-dark100'>
+            className='flex items-center flex-col gap-2 lg:hidden fixed z-10 top-1/2 -translate-y-1/2 right-0 text-dark100'>
             <PiSquaresFour className='w-6 h-6' />
             {isopen && (
-                <div className='xs:block hidden dark:bg-darkblack'>
+                <div className='block lg:hidden dark:bg-darkblack py-4'>
                     <MenuBar />
                 </div>
             )}
